@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    博客列表
+{% endblock %}
+
+{% block css %}
+<style>
+    .active{
+        background-color: red;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div>
+    {% for blog in page_ob_blogs.object_list %}
+        <h3><a href="{% url 'blog_detail' blog.pk %}">{{ blog.title }}</a></h3>
+        <li>Author: {{ blog.author }}</li>
+        <li>Type: {{ blog.blog_type }}</li>
+        <li>Create Time: {{ blog.create_time }}</li>
+        <li>Update Time: {{ blog.content | truncatechars:120 }}</li>
+        <hr>
+    {% endfor %}
+</div>
+
+{# 分页器 #}
+<div>
+    {# 上一页 #}
+    {% if page_ob_blogs.has_previous %}
+        <span><a href="?page={{ page_ob_blogs.previous_page_number }}">Previous</a></span>
+    {% else %}
+        <span>Previous</span>
+    {% endif %}
+
+
+    {# 循环页码 #}
+    {% for page_num in page_range %}
+        {# 给当前页加高亮 #}
+        {% if page_num == page_ob_blogs.number %}
+            <span class="active">{{ page_num }}</span>
+        {% else %}
+            {# 给省略号去掉a标签 #}
+            {% if page_num == '...' %}
+                <span>{{ page_num }}</span>
+            {% else %}
+                <span> <a href="?page={{ page_num }}">{{ page_num }}</a> </span>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+
+
+    {# 下一页 #}
+    {% if page_ob_blogs.has_next %}
+        <span><a href="?page={{ page_ob_blogs.next_page_number }}">Next</a></span>
+    {% else %}
+        <span>Next</span>
+    {% endif %}
+</div>
+
+{% endblock %}
+
